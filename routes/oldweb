@@ -1,0 +1,49 @@
+<?php
+
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\postscontroller;
+use App\Models\Category;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\pagecontroller;
+use App\Http\Controllers\projcontroller;
+use App\Models\mypost;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
+
+
+Route::get('/', [postcontroller::class, 'index'
+])->name('home');
+
+Route::get('blog/{slug}', [postscontroller::class, 'findslug']);
+
+Route::get('/contact', [pagecontroller::class, 'contact']);
+
+Route::get('/projects', [projcontroller::class, 'proj']);
+
+Route::get('/blog', [postscontroller::class, 'display']);
+
+Route::get('/posts/{post}', [postcontroller::class, 'show']);
+
+Route::get('categories/{category:slug}', function (Category $category){
+    return view ('welcome')->with([
+        'posts' => $category->posts,
+        'title' => $category->name,
+        'currentcat' => $category,
+        'categories' => $category::all()
+    ]);
+})->name('category');
+
+Route::get('categories', function (){
+    return view('categories')->with([
+        'cats' => Category::all()
+    ]);
+});
+
+Route::get('authors/{author}', function (User $author){
+    return view('welcome')->with([
+       'posts' => $author->posts,
+        'title' => $author->username,
+        'categories' => Category::all()
+    ]);
+});
